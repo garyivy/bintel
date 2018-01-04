@@ -1,8 +1,30 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    font-family: Raleway;
+    font-size: 14px;
 }
 
+h1 {
+    font-size: 1.3em;
+    font-weight: 800;
+}
+
+h2 {
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+legend {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {

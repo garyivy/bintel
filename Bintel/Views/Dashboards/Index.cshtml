@@ -1,0 +1,419 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+<style>
+    #dashboard-links {
+        display: inline-block; 
+       
+        max-width: 200px;
+    }
+    #dashboard-links a {
+        display: block;
+    }
+    #chart-container {
+        margin-top: 1em;
+        display: inline-block;
+        width: 100%;
+        max-width: 400px;
+        vertical-align: top;
+    }
+
+    @@media screen and (min-width: 768px) {
+        #chart-container {
+            max-width: 600px;
+        }
+
+        section {
+            display: inline-block;
+        }
+
+            section ul {
+                max-width: 200px;
+            }
+
+                section ul li {
+                    list-style-type: disc;
+                    list-style-position: inside;
+                    text-indent: -20px;
+                    margin-left: -20px;
+                }
+    }
+    @@media screen and (min-width: 992px) {
+        #chart-container {
+            max-width: 800px;
+        }
+
+        section {
+            display: inline-block;
+        }
+
+            section ul {
+                max-width: 200px;
+            }
+
+                section ul li {
+                    list-style-type: disc;
+                    list-style-position: inside;
+                    text-indent: -20px;
+                    margin-left: -20px;
+                }
+    }
+</style>
+<section id="dashboard-links">
+    <h2>Dashboards</h2>
+    <a href="Dashboards?Period=month&PeriodCount=10&Category=all">Sales - Last 10 Months</a>
+    <a href="Dashboards?Period=day&PeriodCount=20&Category=all">Sales - Last 20 Days</a>
+    <a href="Dashboards?Period=quarter&PeriodCount=4&Category=all">Sales - Last 8 Quarters</a>
+    <section id="criteria" style="display: inline-block">
+        <form style="width: 200px;">
+            <fieldset>
+                <legend style="margin-top:10px">Metrics&nbsp;<span style="margin-left: 2px; font-size: .7em"><a style="display:inline" href="" onclick="onToggleMetricsClick()">toggle</a></span></legend>
+                <div id="metrics">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="metric-sales" checked>
+                        <label class="form-check-label" for="metric-sales">Sales</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="metric-expenses">
+                        <label class="form-check-label" for="metric-expenses">Expenses</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="metric-temperature" checked>
+                        <label class="form-check-label" for="metric-temperature">Temperature</label>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend style="margin-top:10px">Period&nbsp;<span style="margin-left: 2px; font-size: .7em"><a style="display:inline" href="" onclick="onTogglePeriodsClick()">toggle</a></span></legend>
+                <div id="periods">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Period" id="period-day" value="day" checked />
+                        <label class="form-check-label" for="period-day">
+                            By Day
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Period" id="period-week" value="week" />
+                        <label class="form-check-label" for="period-week">
+                            By Week
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Period" id="period-month" value="month" />
+                        <label class="form-check-label" for="period-month">
+                            By Month
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Period" id="period-quarter" value="quarter" />
+                        <label class="form-check-label" for="period-quarter">
+                            By Quarter
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Period" id="period-year" value="year" />
+                        <label class="form-check-label" for="period-year">
+                            By YEAR
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="number" min="7" max="24" id="period-count" name="PeriodCount" value="20" style="width: 35px; padding-left: 5px" />
+                        <label>Number of Periods</label>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend style="margin-top:10px">Category&nbsp;<span style="margin-left: 2px; font-size: .7em"><a style="display:inline" href="" onclick="onToggleCategoryClick()">toggle</a></span></legend>
+                <div id="category">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Category" id="category-all" value="all" checked />
+                        <label class="form-check-label" for="category-all">
+                            Sum All Categories
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Category" id="category-type" value="type" />
+                        <label class="form-check-label" for="category-type">
+                            Sum By Type
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Category" id="category-color" value="color" />
+                        <label class="form-check-label" for="category-color">
+                            Sum By Color
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="Category" id="category-division" value="division" />
+                        <label class="form-check-label" for="category-division">
+                            Sum By Division
+                        </label>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </section>
+
+</section>
+<section id="chart-container">
+    <!--
+    <a href="#">Daily</a>
+    <a href="#">Weekly</a>
+    <a href="#">Monthly</a>
+    <a href="#">Quarterly</a>
+    <a href="#">Yearly</a>
+    -->
+    <canvas id="myChart" height="200"></canvas>
+</section>
+<!--
+<section>
+    <h3>Notables</h3>
+    <ul>
+        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+        <li>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+    </ul>
+    <h3>Analysis</h3>
+    <h3>Events</h3>
+</section>
+-->
+
+
+@section Scripts {
+    <script>
+        function onToggleMetricsClick() {
+            event.preventDefault();
+            var metrics$ = $('#metrics');
+            var areMetricsShowing = metrics$.is(':visible');
+
+            if (areMetricsShowing) {
+                metrics$.hide();
+
+            } else {
+
+                metrics$.show();
+
+            }
+
+        }
+        function onTogglePeriodsClick() {
+            event.preventDefault();
+            var metrics$ = $('#periods');
+            var areMetricsShowing = metrics$.is(':visible');
+
+            if (areMetricsShowing) {
+                metrics$.hide();
+
+            } else {
+
+                metrics$.show();
+            }
+        }
+        function onToggleCategoryClick() {
+            event.preventDefault();
+            var metrics$ = $('#category');
+            var areMetricsShowing = metrics$.is(':visible');
+
+            if (areMetricsShowing) {
+                metrics$.hide();
+
+            } else {
+
+                metrics$.show();
+            }
+        }
+        function onSubmit() {
+            var periodValue = $("input[name='period']:checked").val();
+            var categoryValue = $("input[name='category']:checked").val();
+            var periodCount = $("#period-count").val();
+
+            var path = window.location.href;
+            var indexOfQuestionMark = path.indexOf('?');
+            if (indexOfQuestionMark > -1) {
+
+                path = path.substr(0, indexOfQuestionMark);
+            }
+
+            path = path + '?Period=' + periodValue + '&PeriodCount=' + periodCount + '&Category=' + categoryValue;
+            window.location.href = path;
+
+            return false;
+        }
+
+        function formatDate(date) {
+            var d = new Date(date);
+            var m = d.getMonth() + 1;
+            var dy = d.getDate();
+
+            return m + '/' + dy;
+        }
+
+        var metrics = @Html.Raw(ViewData["Metrics"])
+        ;
+
+       var highs = @Html.Raw(ViewData["Highs"])
+        ;
+
+        var labels = metrics.map(m => m.Label);
+        var sales = metrics.map(m => m.Sales);
+
+        var temps = [];
+        highs.forEach(m => temps.push({ x: m.Label, y: m.Highs }));
+
+        buildChart();
+
+        function buildChart() {
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        id: 'sales',
+                        label: 'Sales',
+                        type: 'bar',
+                        data: sales,
+                        backgroundColor: 'rgba(34,217,0,0.2)',
+                
+                        borderColor: 'rgba(34,217,0,1)',
+                        /*
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        */
+                        borderWidth: 1
+                    }, {
+                            type: 'line',
+                            showLine: false,
+                            label: 'High Temperature',
+                        pointStyle: 'cross',
+                        yAxisID: "high-temperatures",
+                        backgroundColor: "rgba(255,255,255,0.5)",
+                        data: temps,
+                        borderColor: 'rgba(255, 93, 0, 0.6)',
+                        borderWidth: 2
+                    }
+                    /*
+                        {
+                        id: 'high-temperatures',
+                        label: "High Temperature",
+                        //new option, type will default to bar as that what is used to create the scale
+                        type: "line",
+                        fillColor: "rgba(220,220,220,0.2)",
+                        strokeColor: "rgba(220,220,220,1)",
+                        pointColor: "rgba(220,220,220,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(220,220,220,1)",
+                        data: temps
+                    }*/]
+                },
+
+                options: {
+                    animation: {
+                        duration: 1,
+                        onComplete: function () {
+                            var chartInstance = this.chart,
+                                ctx = chartInstance.ctx;
+                            ctx.textAlign = 'center';
+                            ctx.fillStyle = "rgba(0, 0, 0, 1)";
+                            ctx.textBaseline = 'bottom';
+
+                            this.data.datasets.forEach(function (dataset, i) {
+                                var meta = chartInstance.controller.getDatasetMeta(i);
+                                meta.data.forEach(function (bar, index) {
+                                    var data = dataset.data[index];
+                                    if (data.y) {
+
+                                    ctx.fillText(data.y, bar._model.x, bar._model.y - 5);
+
+                                    }
+
+                                });
+                            });
+                        }
+                    },
+                    scales: {
+                        yAxes: [{
+                            id: "sales",
+                            position: 'left',
+                            type: 'linear',
+                            ticks: {
+                                beginAtZero: true
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'High'
+                            }
+                        },
+                        {
+                            id: "high-temperatures",
+                            position: 'right',
+                            type: 'linear',
+                            /*ticks: {
+                                beginAtZero:true
+                            },*/
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Attendance'
+                            }
+                        }],
+                        xAxes: [{
+                            gridLines: {
+                                display: false
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Time'
+                            }
+                        }]
+                    },
+                },
+                options2: {
+                    scales: {
+                        yAxes: [{
+                            stacked: false,
+                            position: "left",
+                            id: "sales",
+                            type: 'linear',
+                            ticks: {
+                                beginAtZero: true,
+                                //minRotation: 90
+                            }
+                        }, {
+                            stacked: false,
+                            position: "right",
+                            id: "high-temperatures",
+                            type: 'linear',
+                            /*ticks: {
+                                beginAtZero: false,
+                                //minRotation: 90
+                            }*/
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                minRotation: 90
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+</script>
+}
