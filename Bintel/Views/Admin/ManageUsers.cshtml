@@ -1,0 +1,120 @@
+﻿@model Bintel.Models.AdminViewModels.UsersViewModel
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<style>
+    .card {
+        border: 1px solid black;
+        display: inline-block;
+        width: 300px;
+        padding: 10px;
+        margin: 5px;
+    }
+
+    .card label {
+        display: inline-block;
+        width: 80px;
+    }
+
+    .card ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        margin-left: 80px;
+        margin-top: -23px;
+        min-height: 50px;
+    }
+
+    .card ul li {
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+@if(!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+{
+<div class="alert-success">
+    @Model.SuccessMessage
+</div>
+}
+@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+{
+    <div class="alert-danger">
+        @Model.ErrorMessage
+    </div>
+}
+<div style="margin-left: -5px">
+    @foreach (Bintel.Models.AdminViewModels.UserViewModel user in Model.Users)
+    {
+        <div class="card">
+            <form>
+                <div>
+                    <label>First Name</label>
+                    @user.FirstName
+                </div>
+                <div>
+                    <label>Last Name</label>
+                    @user.LastName
+                </div>
+                <div>
+                    <label>User ID</label>
+                    @user.UserName
+                </div>
+                <div>
+                    <label>Email</label>
+                    @user.Email
+                </div>
+                <div>
+                    <label>Roles</label>
+                    <ul>
+                        @foreach (var role in user.Roles)
+                    {
+                    <li>
+                        @role
+                    </li>
+                    }
+
+                    </ul>
+                </div>
+                <hr />
+                <div>
+                    <label>Actions</label>
+                    <ul>
+                        <li><a href="">Delete User</a></li>
+                        @if (user.Roles.Contains("Analyst"))
+                    {
+                    <li>
+                        <a asp-area="" asp-controller="Admin" asp-action="RemoveRole" asp-route-userName=@user.UserName asp-route-roleName="Analyst" title="Remove Analyst Roler">Remove Analyst Role</a>
+                    </li>
+                    }
+                    else
+                    {
+                    <li>
+                        <a asp-area="" asp-controller="Admin" asp-action="AssignRole" asp-route-userName=@user.UserName asp-route-roleName="Analyst" title="Assign Analyst Roler">Assign Analyst Role</a>
+                    </li>
+                    }
+                        @if (user.Roles.Contains("Admin"))
+                    {
+                    <li>
+                        <a asp-area="" asp-controller="Admin" asp-action="RemoveRole" asp-route-userName=@user.UserName asp-route-roleName="Admin" title="Remove Admin Roler">Remove Admin Role</a>
+                    </li>
+                    }
+                    else
+                    {
+                    <li>
+                        <a asp-area="" asp-controller="Admin" asp-action="AssignRole" asp-route-userName=@user.UserName asp-route-roleName="Admin" title="Assign Admin Roler">Assign Admin Role</a>
+                    </li>
+                    }
+                    </ul>
+                </div>
+            </form>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

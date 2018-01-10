@@ -11,6 +11,18 @@
   <PropertyGroup>
     <UserSecretsId>aspnet-Bintel-09fe4d31-24e0-4989-9517-0b8be72ff2c1</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\SandboxViewModels\Metric.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Account\NewUser.cshtml" />
+    <Content Remove="Views\Account\Register.cshtml" />
+  </ItemGroup>
+
+  
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />

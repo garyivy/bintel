@@ -93,43 +93,71 @@ namespace Bintel.Controllers
         }
 
         //
-        // GET: /Account/Register
+        // GET: /Account/NewUser
         [HttpGet]
+        //[Authorize("Admin")]
         [AllowAnonymous]
-        public IActionResult Register(string returnUrl = null)
+        public IActionResult NewUser()
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            var initializedModel = new NewUserViewModel
+            {
+                FirstName = string.Empty,
+                LastName = string.Empty,
+                UserName = string.Empty,
+                Email = string.Empty,
+                ConfirmEmail = string.Empty,
+                Password = string.Empty,
+                ConfirmPassword = string.Empty,
+                SuccessMessage = null
+                
+            };
+
+            initializedModel.FirstName = "John";
+            initializedModel.LastName = "Smith";
+            initializedModel.Password = "Zxcv1234!";
+            initializedModel.ConfirmPassword = "Zxcv1234!";
+            return View(initializedModel);
         }
 
         //
-        // POST: /Account/Register
+        // POST: /Account/NewUser
         [HttpPost]
+        //[Authorize("Admin")]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        public async Task<IActionResult> NewUser(NewUserViewModel model)
         {
-            ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    UserName = model.UserName,
+                    Email = model.Email
+                };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
-                    // Send an email with this link
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation(3, "User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
+                    _logger.LogInformation(3, "User added.");
+
+                    ModelState.Clear();
+
+                    model.SuccessMessage = model.FirstName + " " + model.LastName + " has been added.";
+                    model.FirstName = string.Empty;
+                    model.LastName = string.Empty;
+                    model.UserName = string.Empty;
+                    model.Email = string.Empty;
+                    model.ConfirmEmail = string.Empty;
+                    model.Password = string.Empty;
+                    model.ConfirmPassword = string.Empty;
                 }
-                AddErrors(result);
+                else
+                {
+                    AddErrors(result);
+                }
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
